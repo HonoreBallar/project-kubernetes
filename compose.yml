@@ -7,7 +7,7 @@ services:
     
     # 2. Expose le port 8000 du conteneur sur le port 8000 de l'hôte
     ports:
-      - "8000:8000"
+      - "8001:8000"
     
     # 3. Montage de volume pour le développement (HOT RELOAD)
     # Le répertoire './backend/app' de votre machine est lié à '/app/app' dans le conteneur.
