@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: recipes-app
+data:
+  MONGO_DATABASE: "prospect_db"

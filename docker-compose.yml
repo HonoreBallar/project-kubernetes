@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  backend:
+    # 1. Construit l'image depuis le Dockerfile dans le répertoire './backend'
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    
+    # 2. Expose le port 8000 du conteneur sur le port 8000 de l'hôte
+    ports:
+      - "8000:8000"
+    
+    # 3. Montage de volume pour le développement (HOT RELOAD)
+    # Le répertoire './backend/app' de votre machine est lié à '/app/app' dans le conteneur.
+    volumes:
+      - ./backend/app:/app/app
+    
+    # 4. Variables d'environnement pour la connexion à MongoDB Atlas (à charger depuis .env)
+    env_file:
+      - ./.env
+      
+    # 5. Commande de démarrage avec HOT RELOAD (--reload)
+    # Note : Le --app-dir /app est crucial car le code est dans /app/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --app-dir /app
+
+    # 6. Redémarrage automatique en cas de crash
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+# Pour l'instant, on ne définit pas de service 'db' local car on utilise Atlas.
+# Quand on ajoutera le frontend, il sera dans un service 'frontend'.
