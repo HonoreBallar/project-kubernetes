@@ -54,14 +54,14 @@ Le backend FastAPI expose une API CRUD reliée à MongoDB, tandis que le fronten
 ## Prérequis
 - **Node.js** ≥ 18 & npm
 - **Python** ≥ 3.11
-- **MongoDB** (cluster externe ou local). Les manifestes Docker Compose/Kubernetes supposent une connexion externe (Atlas).
+- **MongoDB** : un cluster externe (Atlas) *ou* le service MongoDB local intégré à Docker Compose.
 - **Docker** et **Docker Compose** pour les workflows conteneurisés
 - **kubectl** et éventuellement **kind** ou un cluster compatible Kubernetes pour l’orchestration
 
 ## Variables d'environnement
 | Variable | Où | Description |
 |----------|----|-------------|
-| `MONGO_URI` | backend (`.env` à la racine, référencé par `compose.yml`) | Chaîne de connexion MongoDB. |
+| `MONGO_URI` | backend (`.env` à la racine, référencé par `compose.yml`) | Chaîne de connexion MongoDB. Par défaut en Docker Compose : `mongodb://recipeadmin:recipepass@mongo:27017/recipes_db?authSource=admin`. |
 | `MONGO_DATABASE` | backend | Nom de la base (par défaut `recipes_db`). |
 | `VITE_API_URL` | frontend | URL appelée par le frontend (ex. `/api` en mode proxy ou `https://mon-backend/api`). |
 | `VITE_BACKEND_ORIGIN` | frontend | Origine publique du backend (ex. `https://mon-backend`). Sert à résoudre les images. Laisser vide pour utiliser la même origine que le frontend. |
@@ -98,10 +98,22 @@ L’interface est accessible sur `http://localhost:5173`. Les requêtes `/api` e
 docker compose up --build
 ```
 Services disponibles :
-- **Frontend** : http://localhost:5173
+- **MongoDB** : port 27017 exposé (admin : `recipeadmin` / `recipepass`)
 - **Backend** : http://localhost:8001 (port mappé depuis le conteneur 8000)
+- **Frontend** : http://localhost:5173
+- **Mongo Express** : http://localhost:8081 (auth basique `admin` / `admin`)
 
 Astuce : pour recompiler le frontend après une modification des dépendances, relancez `docker compose up --build frontend`.
+
+### Connexion à MongoDB local
+```bash
+docker compose exec mongo mongosh -u recipeadmin -p recipepass --authenticationDatabase admin
+```
+La base par défaut est `recipes_db`. Les données sont conservées dans le volume Docker `mongo-data`.
+
+### Visualiser les données
+Ouvrez Mongo Express sur http://localhost:8081 et connectez-vous avec `admin` / `admin`.  
+Vous pourrez lister les bases, parcourir les collections (`recipes_db.recipes`) et éditer les documents directement.
 
 ## Kubernetes
 Des manifests prêts à l’emploi sont disponibles dans `k8s/`. Ils supposent l’existence d’un secret `backend-secret.yaml` (MONGO_URI) et d’un configmap pour les variables frontend.
@@ -146,6 +158,7 @@ Les images uploadées sont accessibles via `/static/images/<fichier>`.
 - **Les images n’apparaissent pas** : vérifiez `VITE_BACKEND_ORIGIN` (production) ou la variable proxy (`VITE_BACKEND_PROXY_TARGET`) en développement. Confirmez également que le backend expose `/static` et que le dossier `backend/app/static/images` est monté en volume si nécessaire.
 - **`vite: not found` lors d’un build local** : exécutez `npm install` depuis `frontend/` pour installer les dépendances.
 - **Erreur MongoDB** : assurez-vous que `MONGO_URI` pointe vers un cluster accessible et que le pare-feu autorise l’IP utilisée.
+- **Connexion impossible à Mongo local** : vérifiez que le service `mongo` est démarré (`docker compose ps`) et que l’URI inclut `authSource=admin` si vous utilisez les identifiants par défaut (`recipeadmin`/`recipepass`).
 - **CORS** : le backend autorise toutes les origines par défaut (`allow_origins=["*"]`). Ajustez si besoin pour un déploiement production.
 
 ## Commandes utiles
