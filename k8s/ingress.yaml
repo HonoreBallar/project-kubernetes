@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: recipes.local
+    - host: recipes.localhost
       http:
         paths:
           - path: /api
@@ -23,6 +23,13 @@ spec:
                 name: backend-service
                 port:
                   number: 8000
+          - path: /mongo
+            pathType: Prefix
+            backend:
+              service:
+                name: mongo-express
+                port:
+                  number: 8081
           - path: /
             pathType: Prefix
             backend:

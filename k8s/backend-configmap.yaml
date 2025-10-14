@@ -4,4 +4,4 @@ metadata:
   name: backend-config
   namespace: recipes-app
 data:
-  MONGO_DATABASE: "prospect_db"
+  MONGO_DATABASE: "recipes_db"

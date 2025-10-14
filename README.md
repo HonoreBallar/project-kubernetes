@@ -128,6 +128,7 @@ kubectl get all -n recipes-app
 L’Ingress (`k8s/ingress.yaml`) est configuré pour router :
 - `http://recipes.localhost/` → frontend
 - `http://recipes.localhost/api` → backend
+- `http://recipes.localhost/mongo` → Mongo Express (UI)
 
 Ajoutez l’entrée suivante dans `/etc/hosts` (ou `C:\Windows\System32\drivers\etc\hosts`) :
 ```
