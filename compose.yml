@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   backend:
     # 1. Construit l'image depuis le Dockerfile dans le répertoire './backend'
