@@ -8,6 +8,16 @@ CLUSTER_NAME="${CLUSTER_NAME:-recipes-kind}"
 KIND_CONFIG="${KIND_CONFIG:-${K8S_DIR}/kind-config.yaml}"
 BACKEND_IMAGE="${BACKEND_IMAGE:-recipes-backend:local}"
 FRONTEND_IMAGE="${FRONTEND_IMAGE:-recipes-frontend:local}"
+PUBLIC_HOST="${PUBLIC_HOST:-}"
+
+if [[ -z "${PUBLIC_HOST}" ]]; then
+  if command -v hostname >/dev/null 2>&1; then
+    PUBLIC_HOST="$(hostname -I 2>/dev/null | awk '{print $1}')"
+  fi
+  if [[ -z "${PUBLIC_HOST}" ]]; then
+    PUBLIC_HOST="127.0.0.1"
+  fi
+fi
 PUBLIC_HOST="${PUBLIC_HOST:-127.0.0.1}"
 
 require_cmd() {
@@ -63,12 +73,12 @@ kubectl apply -k "${K8S_DIR}"
 info "Ressources déployées dans le namespace recipes-app :"
 kubectl get pods,svc,ingress -n recipes-app
 
-cat <<'EOT'
+cat <<EOT
 
 ✅ Déploiement terminé.
-- Frontend : http://'"${PUBLIC_HOST}"':30573/
-- API      : http://'"${PUBLIC_HOST}"':30800/docs
-- Mongo UI : http://'"${PUBLIC_HOST}"':30881/
+- Frontend : http://${PUBLIC_HOST}:30573/
+- API      : http://${PUBLIC_HOST}:30800/api
+- Mongo UI : http://${PUBLIC_HOST}:30881/
 
 Utilisez les NodePorts exposés par Kind ci-dessus pour accéder aux services.
 EOT

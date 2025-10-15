@@ -143,7 +143,7 @@ Les services sont exposés via des NodePorts Kind :
 - `http://127.0.0.1:30800/api` → backend
 - `http://127.0.0.1:30881/` → Mongo Express (UI)
 
-Déployé sur un VPS ? exportez `PUBLIC_HOST` avant d’exécuter le script (ex. `PUBLIC_HOST=$(curl -4 ifconfig.co) ./k8s/deploy-kind.sh`) pour que les URLs de sortie affichent directement l’adresse publique du serveur.
+Lorsque disponible, le script détecte automatiquement la première IP non-loopback (`hostname -I`). Déployé sur un VPS ? exportez `PUBLIC_HOST` avant d’exécuter le script (ex. `PUBLIC_HOST=$(curl -4 ifconfig.co) ./k8s/deploy-kind.sh`) pour que les URLs de sortie affichent directement l’adresse publique du serveur.
 
 > Besoin d’un Ingress ? Le manifest `k8s/ingress.yaml` reste disponible mais n’est plus appliqué par défaut. Installez un contrôleur `ingress-nginx` (ou équivalent) et ajoutez ce fichier à `kustomization.yaml` si vous souhaitez gérer un domaine personnalisé.
 
