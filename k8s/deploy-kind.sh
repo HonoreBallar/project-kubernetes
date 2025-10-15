@@ -76,7 +76,7 @@ kubectl get pods,svc,ingress -n recipes-app
 cat <<EOT
 
 ✅ Déploiement terminé.
-- Frontend : http://${PUBLIC_HOST}:30573/
+- Frontend : http://${PUBLIC_HOST}:30575/
 - API      : http://${PUBLIC_HOST}:30800/api
 - Mongo UI : http://${PUBLIC_HOST}:30881/
 

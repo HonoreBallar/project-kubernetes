@@ -36,4 +36,4 @@ spec:
     - name: http
       port: 5173
       targetPort: 5173
-      nodePort: 30573
+      nodePort: 30575
