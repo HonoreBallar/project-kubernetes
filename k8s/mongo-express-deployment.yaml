@@ -54,7 +54,9 @@ metadata:
 spec:
   selector:
     app: mongo-express
+  type: NodePort
   ports:
     - name: http
       port: 8081
       targetPort: 8081
+      nodePort: 30881

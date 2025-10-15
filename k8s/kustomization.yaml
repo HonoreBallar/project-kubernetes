@@ -9,4 +9,3 @@ resources:
   - backend-deployment.yaml
   - frontend-deployment.yaml
   - mongo-express-deployment.yaml
-  - ingress.yaml

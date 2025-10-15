@@ -121,19 +121,29 @@ Des manifests prêts à l’emploi sont disponibles dans `k8s/`. Ils supposent l
 Exemple de déploiement sur un cluster local `kind` :
 ```bash
 kind create cluster --config k8s/kind-config.yaml
+docker build -t recipes-backend:local ./backend
+docker build -t recipes-frontend:local ./frontend
+kind load docker-image recipes-backend:local
+kind load docker-image recipes-frontend:local
 kubectl apply -k k8s
 kubectl get all -n recipes-app
 ```
 
-L’Ingress (`k8s/ingress.yaml`) est configuré pour router :
-- `http://recipes.localhost/` → frontend
-- `http://recipes.localhost/api` → backend
-- `http://recipes.localhost/mongo` → Mongo Express (UI)
+**Automatisation** : un script est disponible pour exécuter ces étapes d’un coup :
+```bash
+./k8s/deploy-kind.sh
+```
+Variables utiles :
+- `CLUSTER_NAME` : nom du cluster kind cible (défaut `recipes-kind`)
+- `SKIP_BUILD=1` : réutilise des images déjà construites
+- `SKIP_LOAD=1` : saute le chargement des images dans kind
 
-Ajoutez l’entrée suivante dans `/etc/hosts` (ou `C:\Windows\System32\drivers\etc\hosts`) :
-```
-127.0.0.1 recipes.localhost
-```
+Les services sont exposés via des NodePorts Kind :
+- `http://127.0.0.1:30573/` → frontend
+- `http://127.0.0.1:30800/api` → backend
+- `http://127.0.0.1:30881/` → Mongo Express (UI)
+
+> Besoin d’un Ingress ? Le manifest `k8s/ingress.yaml` reste disponible mais n’est plus appliqué par défaut. Installez un contrôleur `ingress-nginx` (ou équivalent) et ajoutez ce fichier à `kustomization.yaml` si vous souhaitez gérer un domaine personnalisé.
 
 ## API du backend
 | Méthode | Route | Description |
