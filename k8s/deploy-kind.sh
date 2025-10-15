@@ -76,8 +76,8 @@ kubectl get pods,svc,ingress -n recipes-app
 cat <<EOT
 
 ✅ Déploiement terminé.
-- Frontend : http://${PUBLIC_HOST}:30575/
-- API      : http://${PUBLIC_HOST}:30800/api
+- Frontend : http://${PUBLIC_HOST}:31000/
+- API      : http://${PUBLIC_HOST}:30800/docs
 - Mongo UI : http://${PUBLIC_HOST}:30881/
 
 Utilisez les NodePorts exposés par Kind ci-dessus pour accéder aux services.
