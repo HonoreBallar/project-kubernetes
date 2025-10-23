@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// État initial du formulaire de création ; utile pour réinitialiser proprement.
 const emptyForm = {
   title: "",
   description: "",
@@ -11,6 +12,7 @@ export default function RecipeForm({ onSubmit, message, error }) {
   const [createForm, setCreateForm] = useState(emptyForm);
   const [createImage, setCreateImage] = useState(null);
 
+  // Rend le composant contrôlé : chaque saisie met à jour l'état associé.
   const handleCreateChange = (event) => {
     const { name, value } = event.target;
     setCreateForm((prev) => ({ ...prev, [name]: value }));
@@ -18,7 +20,8 @@ export default function RecipeForm({ onSubmit, message, error }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
+    // Conversion générique vers FormData pour conserver l'upload de fichiers.
     const toFormData = (form, imageFile) => {
       const formData = new FormData();
       Object.entries(form).forEach(([key, value]) => {
@@ -33,7 +36,7 @@ export default function RecipeForm({ onSubmit, message, error }) {
     };
 
     await onSubmit(toFormData(createForm, createImage));
-    
+
     // Réinitialiser le formulaire en cas de succès
     if (!error) {
       setCreateForm(emptyForm);

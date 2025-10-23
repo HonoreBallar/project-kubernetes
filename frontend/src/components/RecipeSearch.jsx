@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// Barre de recherche autonome qui délègue la requête au parent (App).
 export default function RecipeSearch({ onSearch, searchResults, error }) {
   const [searchTerm, setSearchTerm] = useState("");
 

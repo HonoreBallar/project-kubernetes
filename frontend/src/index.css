@@ -1,7 +1,9 @@
+/* Active les couches Tailwind générées par Vite (base, composants, utilitaires). */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Applique une couleur de texte globale cohérente avec la charte Tailwind. */
 body {
   @apply text-slate-900;
 }

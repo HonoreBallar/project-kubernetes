@@ -1,8 +1,13 @@
-# models/recipe.py
+"""Modèle SQLAlchemy éventuel (actuellement inutilisé) pour les recettes."""
+
 from sqlalchemy import Column, Integer, String, Text
+
 from app.db.database import Base
 
+
 class Recipe(Base):
+    """Structure relationnelle équivalente à la collection MongoDB."""
+
     __tablename__ = "recipes"
 
     id = Column(Integer, primary_key=True, index=True)

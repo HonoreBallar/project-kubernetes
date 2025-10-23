@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// Gabarit vide pour réinitialiser les champs lorsque aucune recette n'est choisie.
 const emptyForm = {
   title: "",
   description: "",
@@ -19,11 +20,13 @@ export default function RecipeUpdate({
   const [updateForm, setUpdateForm] = useState(emptyForm);
   const [updateImage, setUpdateImage] = useState(null);
 
+  // Repère la recette active à partir de la liste complète reçue en props.
   const selectedRecipe = recipes.find(
     (recipe) => String(recipe.id) === String(selectedId)
   );
 
   useEffect(() => {
+    // Quand la sélection change, on pré-remplit le formulaire avec les valeurs.
     if (selectedRecipe) {
       setUpdateForm({
         title: selectedRecipe.title ?? "",
@@ -44,11 +47,12 @@ export default function RecipeUpdate({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     if (!selectedId) {
       return;
     }
 
+    // Recycle le helper `FormData` pour rester cohérent avec la création.
     const toFormData = (form, imageFile) => {
       const formData = new FormData();
       Object.entries(form).forEach(([key, value]) => {
@@ -63,7 +67,7 @@ export default function RecipeUpdate({
     };
 
     await onUpdateRecipe(selectedId, toFormData(updateForm, updateImage));
-    
+
     // Réinitialiser l'image en cas de succès
     if (!error) {
       setUpdateImage(null);

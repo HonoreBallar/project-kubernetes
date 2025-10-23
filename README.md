@@ -147,6 +147,33 @@ Lorsque disponible, le script détecte automatiquement la première IP non-loopb
 
 > Besoin d’un Ingress ? Le manifest `k8s/ingress.yaml` reste disponible mais n’est plus appliqué par défaut. Installez un contrôleur `ingress-nginx` (ou équivalent) et ajoutez ce fichier à `kustomization.yaml` si vous souhaitez gérer un domaine personnalisé.
 
+## CI/CD (GitHub Actions)
+
+Deux workflows résident dans `.github/workflows/` et sont abondamment commentés pour expliquer chaque étape.
+
+| Workflow | Fichier | Déclencheurs | Description |
+|----------|---------|--------------|-------------|
+| Continuous Integration | `ci.yml` | `push` sur `main`, `pull_request` → `main` | Vérifie que le backend Python s’installe et que la compilation Vite passe. La commande `pytest` est lancée si un dossier `backend/tests/` est présent. |
+| Continuous Deployment | `cd.yml` | Tags `v*`, déclenchement manuel | Construit et pousse deux images Docker (`recipes-backend`, `recipes-frontend`), puis applique les manifests Kubernetes et force le rollout sur le namespace `recipes-app`. |
+
+### Secrets requis
+
+Ajoutez les secrets GitHub suivants avant d’activer les workflows :
+
+| Secret | Utilisation | Comment l’obtenir |
+|--------|-------------|-------------------|
+| `REGISTRY_USERNAME` | Connexion au registre Docker (`docker/login-action`). | Identifiant de votre compte (ex. GitHub → `${{ github.repository_owner }}`). |
+| `REGISTRY_PASSWORD` | Mot de passe/token personnel pour le registre. | Token PAT (scope `write:packages` pour GHCR) ou mot de passe Docker Hub. |
+| `KUBE_CONFIG` | Accès au cluster Kubernetes pour `kubectl`. | `cat ~/.kube/config | base64 -w0` et collez la valeur. |
+
+> Astuce : si vous utilisez GHCR, pensez à cocher « Enable SSO » pour l’organisation visée après avoir créé le PAT.
+
+### Personnalisation rapide
+- Modifier la branche surveillée par la CI (`on.push.branches`) si nécessaire.
+- Ajuster le registre (`REGISTRY`, `IMAGE_NAMESPACE`) dans `cd.yml`. Exemple Docker Hub : `REGISTRY: docker.io`, `IMAGE_NAMESPACE: mon-compte`.
+- Adapter la commande de build frontend (p. ex. produire un bundle statique et servir via Nginx) en modifiant `frontend/Dockerfile` et la section correspondante du workflow CD.
+- Adapter les noms des Deployments et namespace dans `k8s/` si vous changez la topologie du cluster.
+
 ## API du backend
 | Méthode | Route | Description |
 |---------|-------|-------------|

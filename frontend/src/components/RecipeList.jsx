@@ -1,3 +1,4 @@
+// Composant carte qui affiche une recette isolée avec actions contextuelles.
 const RecipeItem = ({ recipe, onSelect, onDelete, isSelected }) => {
   const cardClasses = [
     "group relative flex h-full transform flex-col rounded-lg border bg-white p-4 shadow-sm transition-transform duration-200",
@@ -7,6 +8,7 @@ const RecipeItem = ({ recipe, onSelect, onDelete, isSelected }) => {
   ].join(" ");
 
   return (
+    // Chaque carte est un `<li>` pour rester compatible avec la grille responsive.
     <li className={cardClasses}>
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -54,10 +56,11 @@ const RecipeItem = ({ recipe, onSelect, onDelete, isSelected }) => {
   );
 };
 
-export default function RecipeList({ 
-  recipes, 
-  loading, 
-  onSelectRecipe, 
+// Liste complète des recettes ; gère aussi l'état vide et le bouton d'ajout.
+export default function RecipeList({
+  recipes,
+  loading,
+  onSelectRecipe,
   onDeleteRecipe,
   selectedId,
   onAddClick
